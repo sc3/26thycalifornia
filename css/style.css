@@ -1,0 +1,103 @@
+/* 26th y california css */
+body {
+  font-family: "Radley", Georgia, serif;
+  font-size: 18px;
+  background-color: #eaeaea;
+}
+
+a { color: #900; }
+a:hover { color: #c00; }
+
+.pagenav {
+  padding: 4px 0;
+  margin-bottom: 50px;
+}
+.pagenav.affix {
+  width: 100%;
+  z-index: 100;
+  background-color: #fff;
+  border-bottom: 1px solid #aaa;
+  height: 40px;
+  top: 0;
+  left: 0;
+}
+
+.pagenav .nav { 
+  float: none;
+  display: inline-block;
+  font-size: 24px;
+  line-height: 28px;
+}
+.pagenav .nav>li>a {
+  padding: 2px 15px;
+}
+.pagenav .nav>li>a:hover, .pagenav .nav>li>a:focus {
+  background-color: #fff;
+}
+
+.box {
+    position: relative;
+    margin: 15px 0;
+    padding: 15px 20px;
+    background:#fff;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+       -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+            box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+ 
+.box:before {
+  content:"";
+  position:absolute; 
+  z-index:-2;
+  top:50%;
+  bottom:0;
+  left:10px;
+  right:10px;
+  -webkit-box-shadow:0 0 15px rgba(0,0,0,0.6);
+  -moz-box-shadow:0 0 15px rgba(0,0,0,0.6);
+  box-shadow:0 0 15px rgba(0,0,0,0.6);
+  -moz-border-radius:10px / 100px;
+  border-radius:10px / 100px;
+}
+
+.intro {
+  text-align: center;
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 10px;
+  margin: 0 120px 20px 120px;
+  font-size: 22px;
+}
+.intro .social-links {
+  margin-top: 10px;
+  font-size: 29px;
+}
+.intro .social-links a {
+  display: inline-block;
+}
+
+
+h1.headline { 
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 48px;
+  line-height: 60px;
+  border-bottom: 1px solid #bbb;
+}
+
+hr {
+  background-color: #ccc;
+  border: none;
+  height: 1px;
+  margin: 40px 0;
+}
+
+section {
+  margin-bottom: 65px;
+}
+
+.back {
+    float: right;
+    margin-top: -30px;
+    font-size: 14px;
+}
