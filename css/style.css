@@ -104,13 +104,18 @@ section {
 
 /* -- Su estilos -- */
 
-.table {
+.stats .table {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
 }
-.table thead th,
-.table tbody td {
+.stats .table thead th,
+.stats .table tbody td {
   text-align: right;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+.stats thead th {
+  font-size: 12px;
 }
 
 @media (max-width: 768px) {
