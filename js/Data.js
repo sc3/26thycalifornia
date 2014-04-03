@@ -5,7 +5,8 @@ var DailyPopulationCollection = Backbone.Collection.extend({
     // Cast all strings to numbers
     return _.map(data, function(day) {
       for (key in day)
-          day[key] = Number(day[key]);
+          if (key != "date")
+            day[key] = Number(day[key]);
       return day;
     });
   },
