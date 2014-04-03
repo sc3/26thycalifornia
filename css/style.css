@@ -97,7 +97,53 @@ section {
 }
 
 .back {
-    float: right;
-    margin-top: -30px;
-    font-size: 14px;
+  float: right;
+  margin-top: -30px;
+  font-size: 14px;
 }
+
+@media (max-width: 768px) {
+  h1.headline { 
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 36px;
+    line-height: 48px;
+  }
+
+  .intro {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .pagenav {
+    margin-bottom: 10px;
+  }
+
+  .pagenav .nav { 
+    display: block;
+    font-size: 24px;
+    line-height: 38px;
+    text-align: left;
+  }
+
+  .pagenav li {
+    float: none;
+  }
+
+  .pagenav li a:before {
+    font-family: FontAwesome;
+    margin-right: 5px;
+    color: #a33;
+    content: "\f18e";
+  }
+
+  .pagenav.affix {
+    position: static;
+    height: auto;
+    border: none;
+    background-color: transparent;
+  }
+}
+
+
