@@ -118,6 +118,10 @@ section {
   font-size: 12px;
 }
 
+.bar {
+  fill: #900;
+}
+
 @media (max-width: 768px) {
   h1.headline { 
     text-align: center;
