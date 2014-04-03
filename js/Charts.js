@@ -10,3 +10,10 @@ var StatsTableView = Backbone.View.extend({
     return this;
   },
 });
+
+var DailyPopulationChartView = ChartView.extend({
+  draw: function() {
+    this.$el.html('¡Hola mundo!');
+    return this;
+  },
+});
