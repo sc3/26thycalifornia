@@ -102,6 +102,17 @@ section {
   font-size: 14px;
 }
 
+/* -- Su estilos -- */
+
+.table {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+.table thead th,
+.table tbody td {
+  text-align: right;
+}
+
 @media (max-width: 768px) {
   h1.headline { 
     text-align: center;
