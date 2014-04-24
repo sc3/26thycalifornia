@@ -118,6 +118,11 @@ section {
   font-size: 12px;
 }
 
+.stats td small {
+  font-size: 11px;
+  color: #999;
+}
+
 .bar {
   fill: #900;
 }

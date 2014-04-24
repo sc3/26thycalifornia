@@ -1,11 +1,19 @@
-var StatsTableView = Backbone.View.extend({
+var StatsTableView = ChartView.extend({
   initialize: function(options) {
     this.template = _.template(options.template);
     this.collection.on('sync', this.render, this);
   },
   render: function() {
     this.$el.html(this.template({
-      collection: this.collection
+      population_average: this.collection.get_average("population"),
+      population_max: this.collection.get_max("population"),
+      population_min: this.collection.get_min("population"),
+      booked_average: this.collection.get_average("booked"),
+      booked_max: this.collection.get_max("booked"),
+      booked_min: this.collection.get_min("booked"),
+      left_average: this.collection.get_average("left"),
+      left_max: this.collection.get_max("left"),
+      left_min: this.collection.get_min("left"),
     }));
     return this;
   },
@@ -33,6 +41,26 @@ var DailyPopulationChartView = ChartView.extend({
       .domain([startDate, endDate])
       ;
 
+    var xAxis = d3.svg.axis()
+      .scale(xScale)
+      .orient("bottom")
+      ;
+
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .ticks(15)
+        .tickSize(this.dimensions.wrapperWidth)
+        .tickFormat(function(d) {
+          var ticks = svg.select('g.y.axis').selectAll('g')[0],
+              max_tick = d3.select(ticks[ticks.length - 1]).datum();
+          if ( Number(d) >= Number(max_tick) )
+            return view.formatCommas(d) + " reports";
+          else
+            return view.formatCommas(d);
+        })
+        .orient("right")
+        ;
+
     // Create canvas
     var svg = d3.select(this.el).append("svg")
         .attr("width", this.dimensions.wrapperWidth)
@@ -40,6 +68,23 @@ var DailyPopulationChartView = ChartView.extend({
       .append("g")
         .attr("transform", "translate(" + this.options.margin.left + "," + this.options.margin.top + ")")
         ;
+
+    //create and set x axis position
+    //svg.append("g")
+        //.attr("class", "x axis")
+        //.attr("transform", "translate(0," + this.dimensions.height + ")")
+        //.call(xAxis)
+        //;
+
+    // create and set y axis positions
+    //var gy = svg.append("g")
+      //.attr("class", "y axis")
+      //.attr("transform", "translate(" + parseInt(-1 * this.options.margin.left) +", 0)")
+      //.attr("text-anchor", "middle")
+      //.call(yAxis)
+    //.selectAll("text")
+      //.attr("x", 0)
+      //;
 
     svg.selectAll("rect")
       .data(data)

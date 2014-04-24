@@ -11,7 +11,7 @@ var DailyPopulationCollection = Backbone.Collection.extend({
     });
   },
 
-  average: function(field) {
+  get_average: function(field) {
     // Calculate average for 'field`
     var values = this.pluck(field)
     var sum = _.reduce(values, function(memo, num) { return memo + num; }, 0);

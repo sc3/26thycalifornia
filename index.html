@@ -17,35 +17,15 @@
   <meta property="og:description" content="Investigando datos raspan del Sheriff del Condado de Cook 'Inmate Locator'." />
 
   <!-- CSS -->
-  <!-- 
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css" />
-  //-->
-  <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" type="text/css" href="lib/font-awesome/css/font-awesome.min.css" /> 
-  <!-- 
   <link href='http://fonts.googleapis.com/css?family=Radley:400' rel='stylesheet' type='text/css'>
-  //-->
   <link rel="stylesheet" type="text/css" href="css/style.css" />
   <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
   <![endif]-->
 
-  <!-- Analíticas -->
-  <!--
-  <script>
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-XXXXXXX-XX']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-  // -->
 </head>
 
 <body>
@@ -99,7 +79,7 @@
           <div class="box">
             <h3>Estadísticas diarias</h3>
             <div class="stats"></div>
-            <p class="small">Todas las estadísticas de uso de la población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
+            <p class="small">Estas estadísticas representan el total de población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
           </div>
         </div>
       </div>
@@ -141,18 +121,11 @@
   </div>
 
   <!-- Bibliotecas de código -->
-  <!-- 
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
-  //-->
-  <script src="lib/jquery/dist/jquery.min.js"></script>
-  <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="lib/underscore/underscore.js"></script>
-  <script src="lib/backbone/backbone.js"></script>
-  <script src="lib/d3/d3.min.js"></script>
   <script src="js/ChartView.js"></script>
 
   <!-- Aplicación -->
@@ -180,7 +153,7 @@
           </td>
         </tr>
         <tr>
-          <th>Reservas</th>
+          <th>Reservas <br/><small>(Bookings)</small></th>
           <td><%= booked_average %></td>
           <td>
             <%= this.formatCommas(booked_max.get("booked")) %><br/>
@@ -192,7 +165,7 @@
           </td>
         </tr>
         <tr>
-          <th>Mutis</th>
+          <th>Mutis <br/><small>(Leavings)</small></th>
           <td><%= left_average %></td>
           <td>
             <%= this.formatCommas(left_max.get("left")) %><br/>
