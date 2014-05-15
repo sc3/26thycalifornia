@@ -35,7 +35,8 @@
     <div class="intro">
       <h1 class="headline">26th y California</h1>
       <p>Visualiza los datos de raspado de preso localizador del Sheriff del Condado de Cook</p>
-      <p>Desarrollado por <a href="https://github.com/sc3/sc3">Supreme Chi-Town Coding Crew</a></p>
+      <p>Visualizing data scraped from the Cook County Sheriff's Inmate Locator</p>
+      <p>Desarrollado por / developed by <a href="https://twitter.com/Migrahack">Migrahack</a> y <a href="https://github.com/sc3/sc3">Supreme Chi-Town Coding Crew</a></p>
       <div class="social-links text-center">
         <a target="_blank" href="https://www.facebook.com/sharer.php?u=http%3A%2F%2F26thycalifornia.recoveredfactory.net&t=26th+y+California">
           <i class="fa fa-facebook-square"></i>
@@ -57,11 +58,10 @@
   <div data-spy="affix" data-offset-top="241" data-auto-width="true" class="pagenav" role="navigation">
     <div class="container text-center">
       <ul class="pagenav-nav nav nav-pills">
-        <li><a href="#poblacion-diaria">Población diaria</a></li>
-        <li><a href="#entrada-y-salida">Entrada y salida</a></li>
-        <li><a href="#demografia">Demografía</a></li>
-        <li><a href="#tribuneales">Tribunales</a></li>
-        <li><a href="#citacion">Citaciónes</a></li>
+        <li><a href="#poblacion-diaria">Población diaria / Daily Population</a></li>
+        <li><a href="#entrada-y-salida">Entrada y salida / In and out</a></li>
+        <li><a href="#demografia">Demografía / Demographics</a></li>
+        <li><a href="#citacion">Citaciónes / Citations</a></li>
       </ul>
     </div>
   </div>
@@ -69,7 +69,7 @@
   <!-- Contenido -->
   <div class="container">
     <section id="poblacion-diaria">
-      <h1>Población diaria</h1>
+      <h1>Población diaria / Daily population</h1>
       <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
       <div class="row">
         <div class="col-md-8">
@@ -77,39 +77,36 @@
         </div>
         <div class="col-md-4">
           <div class="box">
-            <h3>Estadísticas diarias</h3>
+            <h3>Estadísticas diarias / Daily statistics</h3>
             <div class="stats"></div>
             <p class="small">Estas estadísticas representan el total de población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
+            <p class="small">These statistics represent the total population of the entire system. This includes prisoners who are not physically housed in the jail.</p>
           </div>
         </div>
       </div>
     </section>
     <section id="entrada-y-salida">
-      <h1>Entrada y salida</h1>
+      <h1>Entrada y salida / In and out</h1>
       <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
       <div class="box">
         <p><em>En construcción.</em></p>
+        <p><em>Under construction.</em></p>
       </div>
     </section>
     <section id="demografia">
-      <h1>Demografía</h1>
+      <h1>Demografía / Demographics</h1>
       <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
       <div class="box">
         <p><em>En construcción.</em></p>
-      </div>
-    </section>
-    <section id="tribuneales">
-      <h1>Tribuneales</h1>
-      <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
-      <div class="box">
-        <p><em>En construcción.</em></p>
+        <p><em>Under construction.</em></p>
       </div>
     </section>
     <section id="citacion">
-      <h1>Citaciónes</h1>
+      <h1>Citaciónes / Citations</h1>
       <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
       <div class="box">
         <p><em>En construcción.</em></p>
+        <p><em>Under construction.</em></p>
       </div>
     </section>
   </div>
@@ -134,14 +131,14 @@
       <thead>
         <tr>
           <th></th>
-          <th>Promedio</th>
-          <th>Máximo</th>
-          <th>Mínimo</th>
+          <th>Promedio<br/><small>average</small></th>
+          <th>Máximo<br/><small>max</small></th>
+          <th>Mínimo<br/><small>min</small></th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <th>Población</th>
+          <th>Población<br/><small>(Population)</small></th>
           <td><%= this.formatCommas(population_average) %></td>
           <td>
             <%= this.formatCommas(population_max.get("population")) %><br/>
