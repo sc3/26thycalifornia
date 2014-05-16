@@ -25,7 +25,7 @@ var ChartView = Backbone.View.extend({
         top: 20,
         right: 30,
         bottom: 30,
-        left: 50
+        left: 80
       },
       type: ""
     };
@@ -49,6 +49,8 @@ var ChartView = Backbone.View.extend({
     Backbone.View.apply(this, arguments);
   },
   initialize: function(options) {
+    this.rendered = false;
+
     // Wrap chart
     this.$el.wrap($('<div class="chart-wrapper">'));
     this.$chart_container = this.$el.parent();
@@ -61,6 +63,7 @@ var ChartView = Backbone.View.extend({
       this.data = this.options.data;
 
     $(window).on("resize", _.debounce(_.bind(this.render, this), 100));
+
   },
   get_dimensions: function() {
     var window_width = $(window).width();
@@ -81,10 +84,8 @@ var ChartView = Backbone.View.extend({
 
     wrapperHeight = height + this.options.margin.top + this.options.margin.bottom;
 
-    //console.log('VIEW OPTIONS', this.options);
     this.$el
-      .height(wrapperHeight)
-      ;
+      .height(wrapperHeight);
 
     this.dimensions = {
       width: width,
@@ -93,10 +94,18 @@ var ChartView = Backbone.View.extend({
       wrapperHeight: wrapperHeight
     };
   },
+  
+  initialize_chart: function() {
+    this.rendered = true;
+    return this;
+  },
+
   // The render function wraps drawing with responsivosity
   render: function() {
     if (this.collection)
       this.data = this.collection.toJSON();
+    if (!this.rendered)
+      this.initialize_chart();
     this.$el.empty();
     this.get_dimensions();
     this.draw();

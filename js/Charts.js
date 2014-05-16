@@ -20,92 +20,116 @@ var StatsTableView = ChartView.extend({
 });
 
 var DailyPopulationChartView = ChartView.extend({
-  draw: function() {
-    var view = this;
 
-    // Get data
-    var maxDay = this.collection.get_max("population");
-    var data = this.collection.toJSON();
+  initialize_chart: function(options) {
 
-    // A function to set y values for bars
-    var yScale = d3.scale.linear()
-      .range([this.dimensions.height, 0])
-      .domain([0, maxDay.get("population")])
-      ;
+    this.maxDay = this.collection.get_max("population");
+    this.startDate = new Date(this.data[0].date);
+    this.endDate = new Date(this.data[this.data.length - 1].date);
+    this.canvas = {};
 
-    // A function to set x positions for bars
-    var startDate = new Date(data[0].date);
-    var endDate = new Date(data[this.data.length - 1].date);
-    var xScale = d3.time.scale()
+    this.createScales();
+    this.createAxes();
+    this.createHelpers();
+    this.createSVG();
+
+    ChartView.initialize_chart.apply(this, arguments);
+  },
+
+  createAxes: function() {
+    this.xAxisYear = d3.svg.axis()
+      .scale(this.xScale)
+      .ticks(d3.time.year, 1)
+      .tickSize(30)
+      .orient("bottom");
+
+    this.xAxisMonth = d3.svg.axis()
+      .scale(this.xScale)
+      .ticks(d3.time.month, 1)
+      .tickFormat(function(d) {
+        var fmt = d3.time.format("%B");
+        return fmt(new Date(d));
+      })
+      .orient("bottom");
+
+    this.yAxis = d3.svg.axis()
+      .scale(this.yScale)
+      .tickSize(this.dimensions.wrapperWidth)
+      .orient("right");
+  },
+
+  createScales: function() {
+    this.xScale = d3.time.scale()
       .range([0, this.dimensions.width])
-      .domain([startDate, endDate])
-      ;
+      .domain([this.startDate, this.endDate]);
+    this.yScale = d3.scale.linear()
+      .range([this.dimensions.height, 0])
+      .domain([0, this.maxDay.get("population")]);
+  },
 
-    var xAxis = d3.svg.axis()
-      .scale(xScale)
-      .orient("bottom")
-      ;
+  createHelpers: function() {
+    this.barX = function (d, i) {
+      var date = new Date(d.date);
+      return this.xScale(date);
+    }
+    _.bindAll(this, 'barX');
+  },
 
-    var yAxis = d3.svg.axis()
-        .scale(yScale)
-        .ticks(15)
-        .tickSize(this.dimensions.wrapperWidth)
-        .tickFormat(function(d) {
-          var ticks = svg.select('g.y.axis').selectAll('g')[0],
-              max_tick = d3.select(ticks[ticks.length - 1]).datum();
-          if ( Number(d) >= Number(max_tick) )
-            return view.formatCommas(d) + " reports";
-          else
-            return view.formatCommas(d);
-        })
-        .orient("right")
-        ;
+  draw: function() {
 
-    // Create canvas
-    var svg = d3.select(this.el).append("svg")
-        .attr("width", this.dimensions.wrapperWidth)
-        .attr("height", this.dimensions.wrapperHeight)
-      .append("g")
-        .attr("transform", "translate(" + this.options.margin.left + "," + this.options.margin.top + ")")
-        ;
+
 
     //create and set x axis position
+    //this.canvas.xaxis = this.canvas.svg.append("g")
+        //.attr("class", "x axis month-ticks")
+        //.attr("transform", "translate(-" + ((Math.round(self.$el.width() / self.data.length)/2) - 1) + "," + this.dimensions.height + ")")
+        //.call(this.xAxisMonth)
+      //.selectAll("text")
+        //.attr("x", 3)
+        //.attr("y", 6)
+        //.style("text-anchor", "start");
+
     //svg.append("g")
-        //.attr("class", "x axis")
+        //.attr("class", "x axis year")
         //.attr("transform", "translate(0," + this.dimensions.height + ")")
-        //.call(xAxis)
-        //;
+        //.attr("transform", "translate(-" + ((Math.round(self.$el.width() / self.data.length)/2) - 1) + "," + this.dimensions.height + ")")
+        //.call(this.xAxisYear)
+      //.selectAll("text")
+        //.style("text-anchor", "start")
+        //.style("text-align", "right")
+        //.attr("y", 10)
+        //.attr("x", 3);
 
     // create and set y axis positions
-    //var gy = svg.append("g")
+    //this.canvas.yaxis = this.canvas.svg.append("g")
       //.attr("class", "y axis")
       //.attr("transform", "translate(" + parseInt(-1 * this.options.margin.left) +", 0)")
       //.attr("text-anchor", "middle")
-      //.call(yAxis)
+      //.call(this.yAxis)
     //.selectAll("text")
-      //.attr("x", 0)
+      //.attr("x", 4)
+      //.attr("dy", -5)
       //;
 
-    svg.selectAll("rect")
-      .data(data)
-      .enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d, i) {
-        var date = new Date(d.date);
-        return xScale(date);
-      })
-      .attr("y", function(d) {
-        return yScale(d.population);
-      })
-      .attr("width", function(d) {
-        return view.dimensions.width / data.length;
-      })
-      .attr("height", function(d) {
-        return view.dimensions.height - yScale(d.population);
-      })
-      ;
+    //this.canvas.bars = this.canvas.svg.selectAll("rect")
+      //.data(this.data)
+      //.enter()
+      //.append("rect")
+      //.attr("class", "bar")
+      //.attr("x", function(d) {
+        //return 50;
+      //}) 
+      //.attr("y", function(d) {
+        //return self.yScale(d.population);
+      //})
+      //.attr("width", function(d) {
+        //return (self.dimensions.width / self.data.length);
+      //})
+      //.attr("height", function(d) {
+        //return self.dimensions.height - self.yScale(d.population);
+      //});
 
     return this;
   },
+
 });
