@@ -22,12 +22,11 @@ var ChartView = Backbone.View.extend({
         "420": 0.7
       },
       margin: {
-        top: 20,
+        top: 0,
         right: 30,
-        bottom: 30,
-        left: 80
+        bottom: 20,
+        left: 75
       },
-      type: ""
     };
 
     this.options = $.extend(true, this.default_options, options);

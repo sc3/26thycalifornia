@@ -9,7 +9,13 @@ $(document).ready(function() {
 
   var population_chart = new DailyPopulationChartView({
     el: $("#poblacion-diaria .chart"),
-    collection: population
+    collection: population,
+    base_height: 440,
+    breakpoints: {
+        // width->height multiplier
+        "768": 0.8,
+        "420": 0.7
+    },
   });
 
   population.fetch();
