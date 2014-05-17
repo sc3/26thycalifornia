@@ -103,6 +103,22 @@ var DailyPopulationChartView = ChartView.extend({
       .attr("width", this.dimensions.wrapperWidth)
       .attr("height", this.dimensions.wrapperHeight)
 
+     this.canvas.bars = this.canvas.svg.append("g")
+        .attr("transform", "translate(" + this.options.margin.left + ", " + this.options.margin.top + ")")
+        .attr("width", this.dimensions.width)
+        .attr("class", "bars")
+      .selectAll("rect")
+        .data(this.data)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d, i) { return self.xScale(new Date(d.date));} )
+        .attr("y", 0)
+        .attr("width", this.xIntervalWidth) 
+        .attr("height", this.dimensions.height)
+        .on("mouseover", this.highlightData)
+        .on("mouseout", this.unhighlightData);
+
     //create and set x axis position
     this.canvas.xaxisMonth = this.canvas.svg.append("g")
         .attr("class", "x axis month-ticks")
@@ -116,7 +132,7 @@ var DailyPopulationChartView = ChartView.extend({
         .attr("transform", "translate(" + this.options.margin.left + ", " + (this.dimensions.height + this.options.margin.top) + ")")
         .call(this.xAxisDay)
 
-    this.canvas.yaxis = this.canvas.svg.append("g")
+    this.canvas.yAxis = this.canvas.svg.append("g")
       .attr("class", "y axis")
       .attr("text-anchor", "middle")
       .attr("transform", "translate(0, " + this.options.margin.top + ")")
@@ -126,25 +142,11 @@ var DailyPopulationChartView = ChartView.extend({
       .attr("x", 0)
       .attr("dy", -3)
 
-     this.canvas.lines = this.canvas.svg.append("g")
+    this.canvas.line = this.canvas.svg.append("g")
         .attr("transform", "translate(" + this.options.margin.left + ", " + this.options.margin.top + ")")
         .attr("width", this.dimensions.width)
-        .attr("class", "lines");
-
-
-    this.canvas.lines.bars = this.canvas.lines.selectAll("rect")
-      .data(this.data)
-      .enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d, i) { return self.xScale(new Date(d.date));} )
-      .attr("y", 0)
-      .attr("width", this.xIntervalWidth) 
-      .attr("height", this.dimensions.height)
-      .on("mouseover", this.highlightData)
-      .on("mouseout", this.unhighlightData);
-
-     this.canvas.lines.population = this.canvas.lines.append("path")
+        .attr("class", "lines")
+      .append("path")
         .datum(this.data)
         .attr("class", "line")
         .attr("d", this.Line);
