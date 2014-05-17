@@ -21,6 +21,43 @@ var StatsTableView = ChartView.extend({
 
 var DailyPopulationChartView = ChartView.extend({
 
+  createScales: function() {
+    // Get start and end dates from data
+    this.startDate = new Date(this.data[0].date);
+    this.endDate = new Date(this.data[this.data.length - 1].date);
+
+    // Create an x-scale using d3's time scale
+    this.xScale = d3.time.scale()
+      .range([0, this.dimensions.width])
+      .domain([this.startDate, this.endDate]);
+
+    // Calculate interval (for bar width)
+    var range = this.xScale.range();
+    this.xIntervalWidth = (range[1] - range[0]) / this.data.length
+
+    // Get max and min value for selected field
+    this.minValue = this.collection.get_min("population").get("population");
+    this.maxValue = this.collection.get_max("population").get("population");
+
+    // Create a y-scale using d3's linear scale
+    this.yScale = d3.scale.linear()
+      .range([this.dimensions.height, 0])
+      .domain([this.minValue * 0.95, this.maxValue * 1.05])
+      .nice();
+  },
+
+  createCallbacks: function() {
+     // xValue callback that returns xScale of data item's date
+    this.xValue = _.bind(function(d, i) {
+      return this.xScale(new Date(d.date));
+    }, this);
+
+    // yValue callback that returns yScale
+    this.yValue = _.bind(function(d, i) {
+      return this.yScale(d.population);
+    }, this); 
+  },
+
   createAxes: function() {
     this.xAxisMonth = d3.svg.axis()
       .scale(this.xScale)
@@ -45,43 +82,12 @@ var DailyPopulationChartView = ChartView.extend({
       .orient("right");
   },
 
-  createScales: function() {
-
-    // Get start and end dates from data
-    this.startDate = new Date(this.data[0].date);
-    this.endDate = new Date(this.data[this.data.length - 1].date);
-
-    // Create an x-scale using d3's time scale
-    this.xScale = d3.time.scale()
-      .range([0, this.dimensions.width])
-      .domain([this.startDate, this.endDate]);
-
-    var range = this.xScale.range();
-    this.xIntervalWidth = (range[1] - range[0]) / this.data.length;
-
-    // Get max and min value for selected field
-    this.minValue = this.collection.get_min("population").get("population");
-    this.maxValue = this.collection.get_max("population").get("population");
-
-    // Create a y-scale using d3's linear scale
-    this.yScale = d3.scale.linear()
-      .range([this.dimensions.height, 0])
-      .domain([this.minValue * 0.95, this.maxValue * 1.05])
-      .nice();
-  },
-
   createLine: function() {
     self = this;
     this.Line = d3.svg.line()
-      .x(function(d, i) {
-        return self.xScale(new Date(d.date))
-      })
-      .y(function(d, i) {
-        return self.yScale(d.population);
-      });
+      .x(this.xValue)
+      .y(this.yValue)
   },
-
-
 
   highlightData: function(d, i) {
     console.log(this);
@@ -93,9 +99,9 @@ var DailyPopulationChartView = ChartView.extend({
   },
 
   draw: function() {
-    var self = this;
     this.canvas = {};
     this.createScales();
+    this.createCallbacks();
     this.createAxes();
     this.createLine();
 
@@ -103,7 +109,7 @@ var DailyPopulationChartView = ChartView.extend({
       .attr("width", this.dimensions.wrapperWidth)
       .attr("height", this.dimensions.wrapperHeight)
 
-     this.canvas.bars = this.canvas.svg.append("g")
+    this.canvas.bars = this.canvas.svg.append("g")
         .attr("transform", "translate(" + this.options.margin.left + ", " + this.options.margin.top + ")")
         .attr("width", this.dimensions.width)
         .attr("class", "bars")
@@ -112,7 +118,7 @@ var DailyPopulationChartView = ChartView.extend({
         .enter()
         .append("rect")
         .attr("class", "bar")
-        .attr("x", function(d, i) { return self.xScale(new Date(d.date));} )
+        .attr("x", this.xValue)
         .attr("y", 0)
         .attr("width", this.xIntervalWidth) 
         .attr("height", this.dimensions.height)
