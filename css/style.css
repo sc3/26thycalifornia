@@ -142,6 +142,18 @@ section {
   font-size: 11px;
   fill: #444;
 }
+.bar {
+  fill: #ccc;
+  opacity: 0;
+  stroke: none;
+}
+.highlight {
+  opacity: 1;
+}
+.day-ticks text {
+  fill: none;
+  display: none;
+}
 
 @media (max-width: 768px) {
   h1.headline { 

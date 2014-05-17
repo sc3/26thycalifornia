@@ -22,10 +22,10 @@ var ChartView = Backbone.View.extend({
         "420": 0.7
       },
       margin: {
-        top: 0,
-        right: 30,
+        top: 13,
+        right: 10,
         bottom: 20,
-        left: 75
+        left: 45
       },
     };
 
@@ -48,7 +48,6 @@ var ChartView = Backbone.View.extend({
     Backbone.View.apply(this, arguments);
   },
   initialize: function(options) {
-    this.rendered = false;
 
     // Wrap chart
     this.$el.wrap($('<div class="chart-wrapper">'));
@@ -94,17 +93,10 @@ var ChartView = Backbone.View.extend({
     };
   },
   
-  initialize_chart: function() {
-    this.rendered = true;
-    return this;
-  },
-
   // The render function wraps drawing with responsivosity
   render: function() {
     if (this.collection)
       this.data = this.collection.toJSON();
-    if (!this.rendered)
-      this.initialize_chart();
     this.$el.empty();
     this.get_dimensions();
     this.draw();

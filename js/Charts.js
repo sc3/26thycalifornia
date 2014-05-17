@@ -21,57 +21,57 @@ var StatsTableView = ChartView.extend({
 
 var DailyPopulationChartView = ChartView.extend({
 
-  initialize_chart: function(options) {
-
-    this.maxDay = this.collection.get_max("population");
-    this.startDate = new Date(this.data[0].date);
-    this.endDate = new Date(this.data[this.data.length - 1].date);
-    this.canvas = {};
-
-    //console.log(this.data[0]);
-    //console.log(this.startDate);
-    //var blah = d3.time.months.utc(this.startDate, this.endDate);
-    //console.log(blah);
-    this.createScales();
-    this.createAxes();
-    this.createLine();
-
-    //ChartView.initialize_chart.apply(this, arguments);
-  },
-
   createAxes: function() {
-    this.xAxisYear = d3.svg.axis()
-      .scale(this.xScale)
-      .ticks(d3.time.year, 1)
-      .tickSize(30)
-      .orient("bottom");
-
     this.xAxisMonth = d3.svg.axis()
       .scale(this.xScale)
       .ticks(d3.time.month, 1)
+      .tickSize(7)
       .tickFormat(function(d) {
         var fmt = d3.time.format("%b '%y");
         return fmt(new Date(d));
       })
       .orient("bottom");
 
+    this.xAxisDay = d3.svg.axis()
+      .scale(this.xScale)
+      .ticks(d3.time.day, 1)
+      .tickSize(4)
+      .orient("bottom");
+
     this.yAxis = d3.svg.axis()
       .scale(this.yScale)
+      .ticks(5)
       .tickSize(this.dimensions.wrapperWidth)
       .orient("right");
   },
 
   createScales: function() {
+
+    // Get start and end dates from data
+    this.startDate = new Date(this.data[0].date);
+    this.endDate = new Date(this.data[this.data.length - 1].date);
+
+    // Create an x-scale using d3's time scale
     this.xScale = d3.time.scale()
       .range([0, this.dimensions.width])
-      .domain([this.startDate, this.endDate])
+      .domain([this.startDate, this.endDate]);
+
+    var range = this.xScale.range();
+    this.xIntervalWidth = (range[1] - range[0]) / this.data.length;
+
+    // Get max and min value for selected field
+    this.minValue = this.collection.get_min("population").get("population");
+    this.maxValue = this.collection.get_max("population").get("population");
+
+    // Create a y-scale using d3's linear scale
     this.yScale = d3.scale.linear()
       .range([this.dimensions.height, 0])
-      .domain([0, this.maxDay.get("population") * 1.35]);
+      .domain([this.minValue * 0.95, this.maxValue * 1.05])
+      .nice();
   },
 
   createLine: function() {
-    var self = this;
+    self = this;
     this.Line = d3.svg.line()
       .x(function(d, i) {
         return self.xScale(new Date(d.date))
@@ -81,31 +81,46 @@ var DailyPopulationChartView = ChartView.extend({
       });
   },
 
+
+
+  highlightData: function(d, i) {
+    console.log(this);
+    d3.select(this).classed("highlight", true);
+  },
+
+  unhighlightData: function(d, i) {
+    d3.select(this).classed("highlight", false);
+  },
+
   draw: function() {
-     this.canvas.svg = d3.select(this.el).append("svg")
-        .attr("width", this.dimensions.wrapperWidth)
-        .attr("height", this.dimensions.wrapperHeight)
-      //.append("g")
-        //.attr("width", this.dimensions.width)
-        //.attr("height", this.dimensions.height)
-        //.attr("transform", "translate(0," + this.options.margin.top + ")")
+    var self = this;
+    this.canvas = {};
+    this.createScales();
+    this.createAxes();
+    this.createLine();
+
+    this.canvas.svg = d3.select(this.el).append("svg")
+      .attr("width", this.dimensions.wrapperWidth)
+      .attr("height", this.dimensions.wrapperHeight)
 
     //create and set x axis position
-    this.canvas.xaxis = this.canvas.svg.append("g")
+    this.canvas.xaxisMonth = this.canvas.svg.append("g")
         .attr("class", "x axis month-ticks")
         .attr("width", this.dimensions.width)
-        .attr("transform", "translate(0," + this.dimensions.height + ")")
+        .attr("transform", "translate(" + this.options.margin.left + ", " + (this.dimensions.height + this.options.margin.top) + ")")
         .call(this.xAxisMonth)
-      //.selectAll("text")
-        //.attr("x", 3)
-        //.attr("y", 6)
-        //.style("text-anchor", "start");
 
-    console.log(this);
+    this.canvas.xaxisDay = this.canvas.svg.append("g")
+        .attr("class", "x axis day-ticks")
+        .attr("width", this.dimensions.width)
+        .attr("transform", "translate(" + this.options.margin.left + ", " + (this.dimensions.height + this.options.margin.top) + ")")
+        .call(this.xAxisDay)
+
     this.canvas.yaxis = this.canvas.svg.append("g")
       .attr("class", "y axis")
-      //.attr("transform", "translate(" + this.options.margin.left + ", " + this.options.margin.top + ")")
       .attr("text-anchor", "middle")
+      .attr("transform", "translate(0, " + this.options.margin.top + ")")
+      .attr("height", this.dimensions.height)
       .call(this.yAxis)
     .selectAll("text")
       .attr("x", 0)
@@ -116,36 +131,24 @@ var DailyPopulationChartView = ChartView.extend({
         .attr("width", this.dimensions.width)
         .attr("class", "lines");
 
+
+    this.canvas.lines.bars = this.canvas.lines.selectAll("rect")
+      .data(this.data)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d, i) { return self.xScale(new Date(d.date));} )
+      .attr("y", 0)
+      .attr("width", this.xIntervalWidth) 
+      .attr("height", this.dimensions.height)
+      .on("mouseover", this.highlightData)
+      .on("mouseout", this.unhighlightData);
+
      this.canvas.lines.population = this.canvas.lines.append("path")
         .datum(this.data)
         .attr("class", "line")
         .attr("d", this.Line);
 
-    //svg.append("g")
-        //.attr("class", "x axis year")
-        //.attr("transform", "translate(0," + this.dimensions.height + ")")
-        //.attr("transform", "translate(-" + ((Math.round(self.$el.width() / self.data.length)/2) - 1) + "," + this.dimensions.height + ")")
-        //.call(this.xAxisYear)
-      //.selectAll("text")
-        //.style("text-anchor", "start")
-        //.style("text-align", "right")
-        //.attr("y", 10)
-        //.attr("x", 3);
-
-
-
-    //var self = this;
-    //this.canvas.bars = this.canvas.svg.selectAll("rect")
-      //.data(this.data)
-      //.enter()
-      //.append("rect")
-      //.attr("class", "bar")
-      //.attr("x", this.barX)
-      //.attr("y", this.barY)
-      //.attr("width", function(d) {
-        //return (self.dimensions.width / (self.data.length * 2));
-      //})
-      //.attr("height", this.barHeight);
     return this;
   },
 
