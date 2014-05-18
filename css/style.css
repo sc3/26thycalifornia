@@ -148,7 +148,10 @@ p.small {
 .lines path {
   fill: none;
   stroke: #900;
-  stroke-width: 2.5px;
+  stroke-width: 1.5px;
+}
+.lines path.left {
+  stroke: #999;
 }
 .axis path.domain {
   stroke: none;

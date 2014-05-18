@@ -20,10 +20,29 @@ var StatsTableView = ChartView.extend({
 });
 
 var DailyChartView = ChartView.extend({
-  createScales: function() {
+  initializeVariables: function() {
     // Get start and end dates from data
     this.startDate = new Date(this.data[0].date);
     this.endDate = new Date(this.data[this.data.length - 1].date);
+
+    // Get max and min value for selected field
+    // @TODO show one line -> multiple in tutorial
+    //this.minValue = this.collection.get_min(this.options.field).get(this.options.field);
+    //this.maxValue = this.collection.get_max(this.options.field).get(this.options.field);
+
+    // Calculate min and max
+    this.minValue = 0;
+    this.maxValue = 0;
+    _.each(this.options.fields, _.bind(function(field, i) {
+      var field_min = this.collection.get_min(field).get(field);
+      if (field_min > this.minValue)
+        this.minValue = field_min;
+      var field_max = this.collection.get_max(field).get(field);
+      if (field_max > this.maxValue)
+        this.maxValue = field_max;
+    }, this));
+  },
+  createScales: function() {
 
     // Create an x-scale using d3's time scale
     this.xScale = d3.time.scale()
@@ -34,27 +53,16 @@ var DailyChartView = ChartView.extend({
     var range = this.xScale.range();
     this.xIntervalWidth = (range[1] - range[0]) / this.data.length
 
-    // Get max and min value for selected field
-    this.minValue = this.collection.get_min(this.options.field).get(this.options.field);
-    this.maxValue = this.collection.get_max(this.options.field).get(this.options.field);
+    // Provide a helper for returning a date run through xScale
+    this.xValue = _.bind(function(d, i) {
+      return this.xScale(new Date(d.date));
+    }, this);
 
     // Create a y-scale using d3's linear scale
     this.yScale = d3.scale.linear()
       .range([this.dimensions.height, 0])
       .domain([this.minValue, this.maxValue])
       .nice();
-  },
-
-  createValueCallbacks: function() {
-     // xValue callback that returns xScale of data item's date
-    this.xValue = _.bind(function(d, i) {
-      return this.xScale(new Date(d.date));
-    }, this);
-
-    // yValue callback that returns yScale
-    this.yValue = _.bind(function(d, i) {
-      return this.yScale(d[this.options.field]);
-    }, this); 
   },
 
   createAxes: function() {
@@ -81,11 +89,12 @@ var DailyChartView = ChartView.extend({
       .orient("right");
   },
 
-  createLine: function() {
-    self = this;
-    this.Line = d3.svg.line()
+  createLine: function(field) {
+    return d3.svg.line()
       .x(this.xValue)
-      .y(this.yValue)
+      .y(_.bind(function(d, i) {
+        return this.yScale(d[field]);
+      }, this));
   },
 
   highlightData: function(d, i) {
@@ -103,11 +112,10 @@ var DailyChartView = ChartView.extend({
     // Set up canvas object to hold svg elements
     this.canvas = {};
 
-    // Create functions
+    // Set up callbacks
+    this.initializeVariables();
     this.createScales();
-    this.createValueCallbacks();
     this.createAxes();
-    this.createLine();
 
     // Create an svg element to work with
     this.canvas = d3.select(this.el).append("svg")
@@ -156,15 +164,18 @@ var DailyChartView = ChartView.extend({
         .attr("x", 0)
         .attr("dy", -3)
 
-    // Draw one line
-    this.canvas.Line = this.canvas.append("g")
+    this.canvas.lines = this.canvas.append("g")
         .attr("transform", standard_transform)
         .attr("width", this.dimensions.width)
-        .attr("class", "lines")
-      .append("path")
-        .datum(this.data)
-        .attr("class", "line")
-        .attr("d", this.Line);
+        .attr("class", "lines");
+
+    _.each(this.options.fields, _.bind(function(field, i) {
+      var line = this.createLine(field);
+      this.canvas.lines.append("path")
+          .datum(this.data)
+          .attr("class", "line " + field)
+          .attr("d", line);
+    }, this));
 
     return this;
   },

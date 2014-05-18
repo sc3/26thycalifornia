@@ -182,7 +182,7 @@
     new DailyChartView({
       el: $("#poblacion-diaria .chart"),
       collection: collection,
-      field: 'population',
+      fields: ['population'],
       base_height: 350,
     });
 
@@ -193,10 +193,17 @@
       template: statsTemplate,
     });
 
+    new StatsTableView({
+      el: $("#entrada-y-salida .salida-stats"),
+      collection: collection,
+      field: 'left',
+      template: statsTemplate,
+    });
+
     new DailyChartView({
       el: $("#entrada-y-salida .chart"),
       collection: collection,
-      fields: ['booked', 'left'],
+      fields: ['left', 'booked'],
       base_height: 350,
     });
 
