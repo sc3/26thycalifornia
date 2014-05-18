@@ -66,37 +66,42 @@
     </div>
   </div>
 
+
   <!-- Contenido -->
   <div class="container-fluid">
     <section id="poblacion-diaria">
-      <h1>Población diaria / Daily population</h1>
-      <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
-      <div class="row">
-        <div class="col-md-9">
-          <div class="chart"></div>
-        </div>
-        <div class="col-md-3">
-          <div class="box">
+      <div class="box">
+        <h1>Población diaria / Daily population</h1>
+        <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
+        <div class="row">
+          <div class="col-md-10">
+            <div class="chart poblacion-chart"></div>
+          </div>
+          <div class="col-md-2">
+            <h2>Estadísticas / Statistics</h2>
             <div class="stats"></div>
+            <p class="small">Estas estadísticas representan el total de población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
+  <p class="small">These statistics represent the total population of the entire system. This includes prisoners who are not physically housed in the jail.</p>
           </div>
         </div>
       </div>
     </section>
     <section id="entrada-y-salida">
-      <h1>Entrada y salida / In and out</h1>
-      <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
-      <div class="row">
-        <div class="col-md-3">
-          <div class="box">
-            <h3>Estadísticas diarias / Daily statistics</h3>
-            <div class="stats"></div>
+      <div class="box">
+        <h1>Entrada y salida / In and out</h1>
+        <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
+        <div class="row">
+          <div class="col-md-10">
+            <div class="chart entrada-chart"></div>
           </div>
-        </div>
-        <div class="col-md-9">
-          <h2>Entrada</h2>
-          <div class="chart entrada-chart"></div>
-          <h2>Salida</h2>
-          <div class="chart salida-chart"></div>
+          <div class="col-md-2">
+            <div class="box">
+              <h2>Entrada</h2>
+              <div class="stats entrada-stats"></div>
+              <h2>Salida</h2>
+              <div class="stats salida-stats"></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -126,12 +131,25 @@
 
   <!-- Templates -->
   <script type="text/template" id="population-table-template">
-    <h3>Estadísticas / Statistics</h3>
     <table class="table">
       <tbody>
         <tr>
-          <th>Promedio / Average</th>
+          <th>Promedio <br/>Average</th>
           <td><%= this.formatCommas(average) %></td>
+        </tr>
+        <tr>
+          <th>Máximo <br/>Maximum</th>
+          <td>
+            <%= this.formatCommas(max) %><br />
+            <small><%= max_date %></small>
+          </td>
+        </tr>
+        <tr>
+          <th>Mínimo <br/>Minimum</th>
+          <td>
+            <%= this.formatCommas(min) %><br />
+            <small><%= min_date %></small>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -152,33 +170,34 @@
   <script>
   $(document).ready(function() {
     var collection = new DailyPopulationCollection();
+    var statsTemplate = $('#population-table-template').html();
 
     new StatsTableView({
       el: $("#poblacion-diaria .stats"),
       collection: collection,
       field: 'population',
-      template: $('#population-table-template').html(),
+      template: statsTemplate,
     });
 
     new DailyChartView({
       el: $("#poblacion-diaria .chart"),
       collection: collection,
       field: 'population',
-      base_height: 500,
+      base_height: 350,
     });
 
-    new DailyChartView({
-      el: $("#entrada-y-salida .entrada-chart"),
+    new StatsTableView({
+      el: $("#entrada-y-salida .entrada-stats"),
       collection: collection,
       field: 'booked',
-      base_height: 180,
+      template: statsTemplate,
     });
 
     new DailyChartView({
-      el: $("#entrada-y-salida .salida-chart"),
+      el: $("#entrada-y-salida .chart"),
       collection: collection,
-      field: 'left',
-      base_height: 180,
+      fields: ['booked', 'left'],
+      base_height: 350,
     });
 
     collection.fetch();

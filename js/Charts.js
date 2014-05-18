@@ -5,13 +5,15 @@ var StatsTableView = ChartView.extend({
     this.collection.on('sync', this.render, this);
   },
   render: function() {
-    console.log(this);
-    console.log(this.collection.get_average(this.field));
-    console.log(this.collection.get_max(this.field));
+    var min = this.collection.get_min(this.field);
+    var max = this.collection.get_max(this.field);
+    console.log(max.get("date"));
     this.$el.html(this.template({
       average: this.collection.get_average(this.field),
-      //max: this.collection.get_max(this.field),
-      //min: this.collection.get_min(this.field),
+      min: min.get(this.field),
+      min_date: min.get("date"),
+      max: max.get(this.field),
+      max_date: max.get("date"),
     }));
     return this;
   },

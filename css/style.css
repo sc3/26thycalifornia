@@ -8,6 +8,27 @@ body {
 a { color: #900; }
 a:hover { color: #c00; }
 
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  margin-top: 0;
+}
+
+h2 { font-size: 17px; }
+h3 { font-size: 14px; }
+
+hr {
+  background-color: #ccc;
+  border: none;
+  height: 1px;
+  margin: 40px 0;
+}
+
+section {
+  margin-bottom: 65px;
+  padding: 0 20px;
+}
+
+
 .pagenav {
   padding: 4px 0;
   margin-bottom: 50px;
@@ -17,6 +38,7 @@ a:hover { color: #c00; }
   z-index: 100;
   background-color: #fff;
   border-bottom: 1px solid #aaa;
+  box-shadow: 0px 0px 3px rgba(0,0,0,0.25);
   height: 40px;
   top: 0;
   left: 0;
@@ -37,11 +59,11 @@ a:hover { color: #c00; }
 
 .box {
     position: relative;
-    padding: 5px 20px;
+    padding: 20px 20px;
     background:#fff;
-    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 50px rgba(0, 0, 0, 0.08) inset;
-       -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 50px rgba(0, 0, 0, 0.08) inset;
-            box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 50px rgba(0, 0, 0, 0.08) inset;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 35px rgba(0, 0, 0, 0.08) inset;
+       -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 35px rgba(0, 0, 0, 0.08) inset;
+            box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 35px rgba(0, 0, 0, 0.08) inset;
 }
  
 .box:before {
@@ -58,6 +80,8 @@ a:hover { color: #c00; }
   -moz-border-radius:10px / 100px;
   border-radius:10px / 100px;
 }
+
+.box > .row { margin-top: 30px; }
 
 .intro {
   text-align: center;
@@ -84,43 +108,42 @@ h1.headline {
   border-bottom: 1px solid #bbb;
 }
 
-hr {
-  background-color: #ccc;
-  border: none;
-  height: 1px;
-  margin: 40px 0;
-}
-
-section {
-  margin-bottom: 65px;
-  padding: 0 20px;
-}
-
 .back {
   float: right;
   margin-top: -30px;
   font-size: 14px;
 }
 
-/* -- Su estilos -- */
+p.small {
+  font-size: 70%;
+}
 
 .stats .table {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 15px;
 }
-.stats .table thead th,
-.stats .table tbody td {
-  text-align: right;
-  padding-left: 4px;
-  padding-right: 4px;
+.stats .table th,
+.stats .table td {
+  padding-left: 0;
+  padding-right: 0;
 }
-.stats thead th {
+.stats .table>tbody>tr>th {
+  width: 25%;
   font-size: 12px;
+  line-height: 15px;
 }
-
+.stats .table>tbody>tr>td {
+  line-height: 15px;
+  font-weight: bold;
+  text-align: right;
+}
 .stats td small {
-  font-size: 11px;
+  font-weight: normal;
+  font-size: 10px;
   color: #999;
+}
+.chart-wrapper {
+  padding-right: 20px;
 }
 .lines path {
   fill: none;
