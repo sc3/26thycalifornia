@@ -1,26 +1,23 @@
 var StatsTableView = ChartView.extend({
   initialize: function(options) {
     this.template = _.template(options.template);
+    this.field = options.field;
     this.collection.on('sync', this.render, this);
   },
   render: function() {
+    console.log(this);
+    console.log(this.collection.get_average(this.field));
+    console.log(this.collection.get_max(this.field));
     this.$el.html(this.template({
-      population_average: this.collection.get_average("population"),
-      population_max: this.collection.get_max("population"),
-      population_min: this.collection.get_min("population"),
-      booked_average: this.collection.get_average("booked"),
-      booked_max: this.collection.get_max("booked"),
-      booked_min: this.collection.get_min("booked"),
-      left_average: this.collection.get_average("left"),
-      left_max: this.collection.get_max("left"),
-      left_min: this.collection.get_min("left"),
+      average: this.collection.get_average(this.field),
+      //max: this.collection.get_max(this.field),
+      //min: this.collection.get_min(this.field),
     }));
     return this;
   },
 });
 
-var DailyPopulationChartView = ChartView.extend({
-
+var DailyChartView = ChartView.extend({
   createScales: function() {
     // Get start and end dates from data
     this.startDate = new Date(this.data[0].date);
@@ -36,17 +33,17 @@ var DailyPopulationChartView = ChartView.extend({
     this.xIntervalWidth = (range[1] - range[0]) / this.data.length
 
     // Get max and min value for selected field
-    this.minValue = this.collection.get_min("population").get("population");
-    this.maxValue = this.collection.get_max("population").get("population");
+    this.minValue = this.collection.get_min(this.options.field).get(this.options.field);
+    this.maxValue = this.collection.get_max(this.options.field).get(this.options.field);
 
     // Create a y-scale using d3's linear scale
     this.yScale = d3.scale.linear()
       .range([this.dimensions.height, 0])
-      .domain([this.minValue * 0.95, this.maxValue * 1.05])
+      .domain([this.minValue, this.maxValue])
       .nice();
   },
 
-  createCallbacks: function() {
+  createValueCallbacks: function() {
      // xValue callback that returns xScale of data item's date
     this.xValue = _.bind(function(d, i) {
       return this.xScale(new Date(d.date));
@@ -54,7 +51,7 @@ var DailyPopulationChartView = ChartView.extend({
 
     // yValue callback that returns yScale
     this.yValue = _.bind(function(d, i) {
-      return this.yScale(d.population);
+      return this.yScale(d[this.options.field]);
     }, this); 
   },
 
@@ -77,7 +74,7 @@ var DailyPopulationChartView = ChartView.extend({
 
     this.yAxis = d3.svg.axis()
       .scale(this.yScale)
-      .ticks(5)
+      .ticks(10)
       .tickSize(this.dimensions.wrapperWidth)
       .orient("right");
   },
@@ -90,7 +87,6 @@ var DailyPopulationChartView = ChartView.extend({
   },
 
   highlightData: function(d, i) {
-    console.log(this);
     d3.select(this).classed("highlight", true);
   },
 
@@ -99,18 +95,26 @@ var DailyPopulationChartView = ChartView.extend({
   },
 
   draw: function() {
+    // Set up transform for line
+    var standard_transform = "translate(" + this.options.margin.left + ", " + this.options.margin.top + ")";
+
+    // Set up canvas object to hold svg elements
     this.canvas = {};
+
+    // Create functions
     this.createScales();
-    this.createCallbacks();
+    this.createValueCallbacks();
     this.createAxes();
     this.createLine();
 
-    this.canvas.svg = d3.select(this.el).append("svg")
+    // Create an svg element to work with
+    this.canvas = d3.select(this.el).append("svg")
       .attr("width", this.dimensions.wrapperWidth)
       .attr("height", this.dimensions.wrapperHeight)
 
-    this.canvas.bars = this.canvas.svg.append("g")
-        .attr("transform", "translate(" + this.options.margin.left + ", " + this.options.margin.top + ")")
+    // Draw background bars
+    this.canvas.Bars = this.canvas.append("g")
+        .attr("transform", standard_transform)
         .attr("width", this.dimensions.width)
         .attr("class", "bars")
       .selectAll("rect")
@@ -125,31 +129,34 @@ var DailyPopulationChartView = ChartView.extend({
         .on("mouseover", this.highlightData)
         .on("mouseout", this.unhighlightData);
 
-    //create and set x axis position
-    this.canvas.xaxisMonth = this.canvas.svg.append("g")
+    // Draw month x-axis
+    this.canvas.xAxisMonth = this.canvas.append("g")
         .attr("class", "x axis month-ticks")
         .attr("width", this.dimensions.width)
         .attr("transform", "translate(" + this.options.margin.left + ", " + (this.dimensions.height + this.options.margin.top) + ")")
         .call(this.xAxisMonth)
 
-    this.canvas.xaxisDay = this.canvas.svg.append("g")
+    // Draw day x-axis
+    this.canvas.xAxisDay = this.canvas.append("g")
         .attr("class", "x axis day-ticks")
         .attr("width", this.dimensions.width)
         .attr("transform", "translate(" + this.options.margin.left + ", " + (this.dimensions.height + this.options.margin.top) + ")")
         .call(this.xAxisDay)
 
-    this.canvas.yAxis = this.canvas.svg.append("g")
-      .attr("class", "y axis")
-      .attr("text-anchor", "middle")
-      .attr("transform", "translate(0, " + this.options.margin.top + ")")
-      .attr("height", this.dimensions.height)
-      .call(this.yAxis)
-    .selectAll("text")
-      .attr("x", 0)
-      .attr("dy", -3)
+    // Draw y-axis
+    this.canvas.yAxis = this.canvas.append("g")
+        .attr("class", "y axis")
+        .attr("text-anchor", "middle")
+        .attr("transform", "translate(0, " + this.options.margin.top + ")")
+        .attr("height", this.dimensions.height)
+        .call(this.yAxis)
+      .selectAll("text")
+        .attr("x", 0)
+        .attr("dy", -3)
 
-    this.canvas.line = this.canvas.svg.append("g")
-        .attr("transform", "translate(" + this.options.margin.left + ", " + this.options.margin.top + ")")
+    // Draw one line
+    this.canvas.Line = this.canvas.append("g")
+        .attr("transform", standard_transform)
         .attr("width", this.dimensions.width)
         .attr("class", "lines")
       .append("path")

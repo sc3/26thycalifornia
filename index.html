@@ -72,15 +72,12 @@
       <h1>Población diaria / Daily population</h1>
       <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-9">
           <div class="chart"></div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <div class="box">
-            <h3>Estadísticas diarias / Daily statistics</h3>
             <div class="stats"></div>
-            <p class="small">Estas estadísticas representan el total de población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
-            <p class="small">These statistics represent the total population of the entire system. This includes prisoners who are not physically housed in the jail.</p>
           </div>
         </div>
       </div>
@@ -88,9 +85,19 @@
     <section id="entrada-y-salida">
       <h1>Entrada y salida / In and out</h1>
       <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
-      <div class="box">
-        <p><em>En construcción.</em></p>
-        <p><em>Under construction.</em></p>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="box">
+            <h3>Estadísticas diarias / Daily statistics</h3>
+            <div class="stats"></div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <h2>Entrada</h2>
+          <div class="chart entrada-chart"></div>
+          <h2>Salida</h2>
+          <div class="chart salida-chart"></div>
+        </div>
       </div>
     </section>
     <section id="demografia">
@@ -102,7 +109,7 @@
       </div>
     </section>
     <section id="citacion">
-      <h1>Citaciónes / Citations</h1>
+      <h1>Citaciones / Citations</h1>
       <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
       <div class="box">
         <p><em>En construcción.</em></p>
@@ -117,6 +124,19 @@
     <p class="text-center"><small>"Guard Tower" fotografia del autor Eric Allix Rogers con Creative Commons <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/">Attribution-NonCommercial-ShareAlike 2.0</a></small></p>
   </div>
 
+  <!-- Templates -->
+  <script type="text/template" id="population-table-template">
+    <h3>Estadísticas / Statistics</h3>
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>Promedio / Average</th>
+          <td><%= this.formatCommas(average) %></td>
+        </tr>
+      </tbody>
+    </table>
+  </script>
+
   <!-- Bibliotecas de código -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -125,60 +145,44 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.3/d3-tip.min.js"></script>
   <script src="js/ChartView.js"></script>
-
-  <!-- Aplicación -->
-  <script type="text/template" id="population-table-template">
-    <table class="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Promedio<br/><small>average</small></th>
-          <th>Máximo<br/><small>max</small></th>
-          <th>Mínimo<br/><small>min</small></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>Población<br/><small>(Population)</small></th>
-          <td><%= this.formatCommas(population_average) %></td>
-          <td>
-            <%= this.formatCommas(population_max.get("population")) %><br/>
-            <small><%= population_max.get("date") %></small>
-          </td>
-          <td>
-            <%= this.formatCommas(population_min.get("population")) %><br/>
-            <small><%= population_min.get("date") %></small>
-          </td>
-        </tr>
-        <tr>
-          <th>Reservas <br/><small>(Bookings)</small></th>
-          <td><%= booked_average %></td>
-          <td>
-            <%= this.formatCommas(booked_max.get("booked")) %><br/>
-            <small><%= booked_max.get("date") %></small>
-          </td>
-          <td>
-            <%= this.formatCommas(booked_min.get("booked")) %><br/>
-            <small><%= booked_min.get("date") %></small>
-          </td>
-        </tr>
-        <tr>
-          <th>Mutis <br/><small>(Leavings)</small></th>
-          <td><%= left_average %></td>
-          <td>
-            <%= this.formatCommas(left_max.get("left")) %><br/>
-            <small><%= left_max.get("date") %></small>
-          </td>
-          <td>
-            <%= this.formatCommas(left_min.get("left")) %><br/>
-            <small><%= left_min.get("date") %></small>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </script>
   <script src="js/Data.js"></script>
   <script src="js/Charts.js"></script>
-  <script src="js/app.js"></script>
+
+  <!-- Aplicación -->
+  <script>
+  $(document).ready(function() {
+    var collection = new DailyPopulationCollection();
+
+    new StatsTableView({
+      el: $("#poblacion-diaria .stats"),
+      collection: collection,
+      field: 'population',
+      template: $('#population-table-template').html(),
+    });
+
+    new DailyChartView({
+      el: $("#poblacion-diaria .chart"),
+      collection: collection,
+      field: 'population',
+      base_height: 500,
+    });
+
+    new DailyChartView({
+      el: $("#entrada-y-salida .entrada-chart"),
+      collection: collection,
+      field: 'booked',
+      base_height: 180,
+    });
+
+    new DailyChartView({
+      el: $("#entrada-y-salida .salida-chart"),
+      collection: collection,
+      field: 'left',
+      base_height: 180,
+    });
+
+    collection.fetch();
+  });
+  </script>
 </body>
 </html>
