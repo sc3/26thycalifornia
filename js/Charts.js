@@ -1,3 +1,18 @@
+d3.mouseover = function(d3Obj) {
+    console.log(d3Obj);
+    var el    = d3Obj[0][0]
+      , event = d3.event;
+
+    var mouseoverEvent = document.createEvent ("MouseEvent");
+    mouseoverEvent.initMouseEvent (
+        "mouseover", true, true, window, 0, 
+        event.screenX, event.screenY, event.clientX, event.clientY, 
+        event.ctrlKey, event.altKey, event.shiftKey, event.metaKey, 
+        0, null);
+    el.dispatchEvent (mouseoverEvent);
+
+};
+
 var StatsTableView = ChartView.extend({
   initialize: function(options) {
     this.template = _.template(options.template);
@@ -7,7 +22,6 @@ var StatsTableView = ChartView.extend({
   render: function() {
     var min = this.collection.get_min(this.field);
     var max = this.collection.get_max(this.field);
-    console.log(max.get("date"));
     this.$el.html(this.template({
       average: this.collection.get_average(this.field),
       min: min.get(this.field),
@@ -31,11 +45,11 @@ var DailyChartView = ChartView.extend({
     //this.maxValue = this.collection.get_max(this.options.field).get(this.options.field);
 
     // Calculate min and max
-    this.minValue = 0;
+    this.minValue = null;
     this.maxValue = 0;
     _.each(this.options.fields, _.bind(function(field, i) {
       var field_min = this.collection.get_min(field).get(field);
-      if (field_min > this.minValue)
+      if (!this.minValue || field_min < this.minValue)
         this.minValue = field_min;
       var field_max = this.collection.get_max(field).get(field);
       if (field_max > this.maxValue)
@@ -60,6 +74,7 @@ var DailyChartView = ChartView.extend({
 
     // Create a y-scale using d3's linear scale
     this.yScale = d3.scale.linear()
+    //this.yScale = d3.scale.pow().exponent(0.7)
       .range([this.dimensions.height, 0])
       .domain([this.minValue, this.maxValue])
       .nice();
@@ -78,18 +93,28 @@ var DailyChartView = ChartView.extend({
 
     this.xAxisDay = d3.svg.axis()
       .scale(this.xScale)
-      .ticks(d3.time.day, 1)
+      .ticks(d3.time.day, 2)
       .tickSize(4)
       .orient("bottom");
 
     this.yAxis = d3.svg.axis()
       .scale(this.yScale)
-      .ticks(10)
+      .ticks(5)
       .tickSize(this.dimensions.wrapperWidth)
       .orient("right");
   },
 
-  createLine: function(field) {
+  createLegend: function() {
+    var legendTemplate = _.template($("#legend-template").html()); // @TODO bad hardcoded template ref
+    var fields = this.options.fields.slice(0);
+    this.legend = this.options.legend;
+    this.legend.html(legendTemplate({
+      fields: fields.reverse(),
+      labels: this.options.labels
+    }));
+  },
+
+  lineFactory: function(field) {
     return d3.svg.line()
       .x(this.xValue)
       .y(_.bind(function(d, i) {
@@ -97,13 +122,7 @@ var DailyChartView = ChartView.extend({
       }, this));
   },
 
-  highlightData: function(d, i) {
-    d3.select(this).classed("highlight", true);
-  },
 
-  unhighlightData: function(d, i) {
-    d3.select(this).classed("highlight", false);
-  },
 
   draw: function() {
     // Set up transform for line
@@ -116,12 +135,15 @@ var DailyChartView = ChartView.extend({
     this.initializeVariables();
     this.createScales();
     this.createAxes();
+    this.createLegend();
 
     // Create an svg element to work with
     this.canvas = d3.select(this.el).append("svg")
       .attr("width", this.dimensions.wrapperWidth)
       .attr("height", this.dimensions.wrapperHeight)
 
+
+    var self = this;
     // Draw background bars
     this.canvas.Bars = this.canvas.append("g")
         .attr("transform", standard_transform)
@@ -136,8 +158,46 @@ var DailyChartView = ChartView.extend({
         .attr("y", 0)
         .attr("width", this.xIntervalWidth) 
         .attr("height", this.dimensions.height)
-        .on("mouseover", this.highlightData)
-        .on("mouseout", this.unhighlightData);
+        .on("mouseover", function(d, i) {
+          self.legend.find(".date-value").html(d.date);
+          _.each(self.options.fields, function(field, i) {
+            self.legend.find("tr."+field+" .legend-value").html(self.formatCommas(d[field]));
+          });
+          d3.select(this).classed("highlight", true);
+
+          if (!d3.event.fireRelated) {
+            var el = this;
+            d3.selectAll('.bars .bar:nth-child('+(i + 1)+')')
+                .filter(function(d,i) {
+                  return this != el;
+                })
+                .each(function(d, i) {
+                  var evt = document.createEvent("MouseEvents");
+                  evt.initMouseEvent("mouseover", false, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                  evt.fireRelated = true; // Tag the event
+                  this.dispatchEvent(evt);
+                });
+          }
+
+          return false;
+        })
+        .on("mouseout", function(d, i) {
+          self.legend.find(".date-value, .legend-value").html("");
+          d3.select(this).classed("highlight", false);
+          if (!d3.event.fireRelated) {
+            var el = this;
+            d3.selectAll('.bars .bar:nth-child('+(i + 1)+')')
+                .filter(function(d,i) {
+                  return this != el;
+                })
+                .each(function(d, i) {
+                  var evt = document.createEvent("MouseEvents");
+                  evt.initMouseEvent("mouseout", false, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                  evt.fireRelated = true; // Tag the event
+                  this.dispatchEvent(evt);
+                });
+          }
+        })
 
     // Draw month x-axis
     this.canvas.xAxisMonth = this.canvas.append("g")
@@ -170,7 +230,7 @@ var DailyChartView = ChartView.extend({
         .attr("class", "lines");
 
     _.each(this.options.fields, _.bind(function(field, i) {
-      var line = this.createLine(field);
+      var line = this.lineFactory(field);
       this.canvas.lines.append("path")
           .datum(this.data)
           .attr("class", "line " + field)

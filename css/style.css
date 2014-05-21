@@ -81,8 +81,6 @@ section {
   border-radius:10px / 100px;
 }
 
-.box > .row { margin-top: 30px; }
-
 .intro {
   text-align: center;
   border-bottom: 1px solid #bbb;
@@ -114,36 +112,40 @@ h1.headline {
   font-size: 14px;
 }
 
-p.small {
-  font-size: 70%;
-}
-
-.stats .table {
+.table {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 15px;
 }
-.stats .table th,
-.stats .table td {
+.table th,
+.table td {
   padding-left: 0;
   padding-right: 0;
 }
-.stats .table>tbody>tr>th {
-  width: 25%;
+.table>tbody>tr>th {
   font-size: 12px;
   line-height: 15px;
+  vertical-align: middle;
 }
-.stats .table>tbody>tr>td {
+.table>tbody>tr>td {
   line-height: 15px;
   font-weight: bold;
   text-align: right;
 }
-.stats td small {
+td small {
   font-weight: normal;
   font-size: 10px;
   color: #999;
 }
-.chart-wrapper {
-  padding-right: 20px;
+.legend-marker {
+  display: block;
+  float: left;
+  height: 12px;
+  width: 12px;
+  margin-right: 4px;
+  background-color: #900;
+}
+.left .legend-marker {
+  background-color: #999;
 }
 .lines path {
   fill: none;
@@ -159,7 +161,7 @@ p.small {
 .axis line,
 .axis path {
   fill: none;
-  stroke: #aaa;
+  stroke: #999;
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
@@ -168,17 +170,41 @@ p.small {
   font-size: 11px;
   fill: #444;
 }
+.y text {
+  font-size: 10px;
+  fill: #555;
+}
+.y .tick:not(:first-child) line {
+  stroke: #ccc;
+}
 .bar {
   fill: #ccc;
   opacity: 0;
   stroke: none;
 }
 .highlight {
-  opacity: 1;
+  opacity: 0.5;
 }
 .day-ticks text {
   fill: none;
   display: none;
+}
+.chart-wrapper {
+  margin-bottom: 50px;
+}
+.chart-wrapper, .detail {
+  margin-right: 180px;
+}
+.legend {
+  float: right;
+  width: 160px;
+}
+.legend .table {
+  margin-bottom: 0;
+  /*font-size: 11px;*/
+}
+.legend .table td, .legend .table th {
+  border: none;
 }
 
 @media (max-width: 768px) {

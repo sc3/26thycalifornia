@@ -74,14 +74,27 @@
         <h1>Población diaria / Daily population</h1>
         <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
         <div class="row">
-          <div class="col-md-10">
+          <div class="col-md-12">
+            <div class="legend poblacion-legend"></div>
             <div class="chart poblacion-chart"></div>
           </div>
-          <div class="col-md-2">
-            <h2>Estadísticas / Statistics</h2>
-            <div class="stats"></div>
-            <p class="small">Estas estadísticas representan el total de población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
-  <p class="small">These statistics represent the total population of the entire system. This includes prisoners who are not physically housed in the jail.</p>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="legend demographic-legend"></div>
+            <div class="chart demographic-chart"></div>
+          </div>
+        </div>
+        <div class="detail">
+          <div class="row">
+            <div class="col-sm-8">
+              <p class="small">Estas estadísticas representan el total de población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
+              <p class="small">These statistics represent the total population of the entire system. This includes prisoners who are not physically housed in the jail.</p>
+            </div>
+            <div class="col-sm-3 col-sm-offset-1">
+              <h2>Estadísticas / Statistics</h2>
+              <div class="stats"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -91,13 +104,26 @@
         <h1>Entrada y salida / In and out</h1>
         <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
         <div class="row">
-          <div class="col-md-10">
+          <div class="col-md-12">
+            <div class="legend entrada-legend"></div>
             <div class="chart entrada-chart"></div>
           </div>
-          <div class="col-md-2">
-            <div class="box">
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="legend salida-legend"></div>
+            <div class="chart salida-chart"></div>
+          </div>
+        </div>
+        <div class="detail">
+          <div class="row">
+            <div class="col-sm-6">
+            </div>
+            <div class="col-sm-3">
               <h2>Entrada</h2>
               <div class="stats entrada-stats"></div>
+            </div>
+            <div class="col-sm-3">
               <h2>Salida</h2>
               <div class="stats salida-stats"></div>
             </div>
@@ -134,18 +160,18 @@
     <table class="table">
       <tbody>
         <tr>
-          <th>Promedio <br/>Average</th>
+          <th>Promedio / Average</th>
           <td><%= this.formatCommas(average) %></td>
         </tr>
         <tr>
-          <th>Máximo <br/>Maximum</th>
+          <th>Máximo / Maximum</th>
           <td>
             <%= this.formatCommas(max) %><br />
             <small><%= max_date %></small>
           </td>
         </tr>
         <tr>
-          <th>Mínimo <br/>Minimum</th>
+          <th>Mínimo / Minimum</th>
           <td>
             <%= this.formatCommas(min) %><br />
             <small><%= min_date %></small>
@@ -153,6 +179,31 @@
         </tr>
       </tbody>
     </table>
+  </script>
+
+  <script type="text/template" id="legend-template">
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>Date</th>
+          <td><span class="date-value"></span></td>
+        </tr>
+      </tbody>
+    </table>
+    <% _.each(fields, function(field, i) { %>
+    <table class="table">
+      <tbody>
+        <tr class="<%= field %>">
+          <th class="<%= field %>">
+            <span class="legend-marker"></span>
+            <%= labels[field] %>
+          </th>
+          <td class="legend-value">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <% }); %>
   </script>
 
   <!-- Bibliotecas de código -->
@@ -169,8 +220,17 @@
   <!-- Aplicación -->
   <script>
   $(document).ready(function() {
-    var collection = new DailyPopulationCollection();
-    var statsTemplate = $('#population-table-template').html();
+    var collection = new DailyPopulationCollection(),
+        statsTemplate = $('#population-table-template').html(),
+        labels = {
+          'males_population_as': 'Asian',
+          'males_population_wh': 'White',
+          'males_population_bk': 'Black',
+          'males_population_lt': 'Latino',
+          'population': 'Poblacion<br/>',
+          'booked': 'Entrada<br/>Booked',
+          'left': 'Salida<br/>Left',
+        };
 
     new StatsTableView({
       el: $("#poblacion-diaria .stats"),
@@ -180,10 +240,21 @@
     });
 
     new DailyChartView({
-      el: $("#poblacion-diaria .chart"),
+      el: $("#poblacion-diaria .poblacion-chart"),
+      legend: $("#poblacion-diaria .poblacion-legend"),
       collection: collection,
       fields: ['population'],
-      base_height: 350,
+      labels: labels,
+      base_height: 180,
+    });
+
+    new DailyChartView({
+      el: $("#poblacion-diaria .demographic-chart"),
+      legend: $("#poblacion-diaria .demographic-legend"),
+      collection: collection,
+      fields: ['males_population_wh', 'males_population_lt', 'males_population_bk', ],
+      labels: labels,
+      base_height: 180,
     });
 
     new StatsTableView({
@@ -201,11 +272,23 @@
     });
 
     new DailyChartView({
-      el: $("#entrada-y-salida .chart"),
+      el: $("#entrada-y-salida .entrada-chart"),
       collection: collection,
-      fields: ['left', 'booked'],
-      base_height: 350,
+      legend: $("#entrada-y-salida .entrada-legend"),
+      fields: ['booked'],
+      labels: labels,
+      base_height: 180,
     });
+
+    new DailyChartView({
+      el: $("#entrada-y-salida .salida-chart"),
+      collection: collection,
+      legend: $("#entrada-y-salida .salida-legend"),
+      fields: ['left'],
+      labels: labels,
+      base_height: 180,
+    });
+
 
     collection.fetch();
   });
