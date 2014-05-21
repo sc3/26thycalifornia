@@ -73,28 +73,33 @@
       <div class="box">
         <h1>Población diaria / Daily population</h1>
         <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
-        <div class="row">
+        <div class="detail">
+          <div class="row">
+            <div class="col-sm-9">
+              <p>Estas estadísticas representan el total de población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
+              <p>These statistics represent the total population of the entire system. This includes prisoners who are not physically housed in the jail.</p>
+              <p>Notice the rough weekly cycle in the jail's population (peaking over the weekend).</p>
+              <p>We are not sure what accounts for the sudden drop in population at the end of January. We believe it could have an artificial component, like scraper problems or data cleanup by the Sheriff's department. The weather almost certainly played a role as well -- crime incident reports were at a historical low in January and February 2014.
+            </div>
+            <div class="col-sm-3">
+              <h2>Estadísticas / Statistics</h2>
+              <div class="stats"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row chart-row">
           <div class="col-md-12">
+            <h2>Total population</h2>
             <div class="legend poblacion-legend"></div>
             <div class="chart poblacion-chart"></div>
           </div>
         </div>
-        <div class="row">
+        <div class="row chart-row">
           <div class="col-md-12">
+            <h2>Population by race and gender</h2>
             <div class="legend demographic-legend"></div>
             <div class="chart demographic-chart"></div>
-          </div>
-        </div>
-        <div class="detail">
-          <div class="row">
-            <div class="col-sm-8">
-              <p class="small">Estas estadísticas representan el total de población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
-              <p class="small">These statistics represent the total population of the entire system. This includes prisoners who are not physically housed in the jail.</p>
-            </div>
-            <div class="col-sm-3 col-sm-offset-1">
-              <h2>Estadísticas / Statistics</h2>
-              <div class="stats"></div>
-            </div>
           </div>
         </div>
       </div>
@@ -103,30 +108,28 @@
       <div class="box">
         <h1>Entrada y salida / In and out</h1>
         <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
+        <div class="detail">
+          <div class="row">
+          </div>
+        </div>
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-sm-2">
+            <h2>Entrada</h2>
+            <div class="stats entrada-stats"></div>
+          </div>
+          <div class="col-md-10">
             <div class="legend entrada-legend"></div>
             <div class="chart entrada-chart"></div>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-sm-2">
+            <h2>Salida</h2>
+            <div class="stats salida-stats"></div>
+          </div>
+          <div class="col-md-10">
             <div class="legend salida-legend"></div>
             <div class="chart salida-chart"></div>
-          </div>
-        </div>
-        <div class="detail">
-          <div class="row">
-            <div class="col-sm-6">
-            </div>
-            <div class="col-sm-3">
-              <h2>Entrada</h2>
-              <div class="stats entrada-stats"></div>
-            </div>
-            <div class="col-sm-3">
-              <h2>Salida</h2>
-              <div class="stats salida-stats"></div>
-            </div>
           </div>
         </div>
       </div>
@@ -161,18 +164,18 @@
       <tbody>
         <tr>
           <th>Promedio / Average</th>
-          <td><%= this.formatCommas(average) %></td>
+          <td class="value"><%= this.formatCommas(average) %></td>
         </tr>
         <tr>
           <th>Máximo / Maximum</th>
-          <td>
+          <td class="value">
             <%= this.formatCommas(max) %><br />
             <small><%= max_date %></small>
           </td>
         </tr>
         <tr>
           <th>Mínimo / Minimum</th>
-          <td>
+          <td class="value">
             <%= this.formatCommas(min) %><br />
             <small><%= min_date %></small>
           </td>
@@ -182,22 +185,15 @@
   </script>
 
   <script type="text/template" id="legend-template">
-    <table class="table">
-      <tbody>
-        <tr>
-          <th>Date</th>
-          <td><span class="date-value"></span></td>
-        </tr>
-      </tbody>
-    </table>
+    <p class="date"><span class="date-value"></span>&nbsp;</p>
     <% _.each(fields, function(field, i) { %>
     <table class="table">
       <tbody>
         <tr class="<%= field %>">
-          <th class="<%= field %>">
-            <span class="legend-marker"></span>
+          <td class="legend-marker-col"><span class="legend-marker"></span></td>
+          <td class="legend-field">
             <%= labels[field] %>
-          </th>
+          </td>
           <td class="legend-value">
           </td>
         </tr>
@@ -223,13 +219,17 @@
     var collection = new DailyPopulationCollection(),
         statsTemplate = $('#population-table-template').html(),
         labels = {
-          'males_population_as': 'Asian',
-          'males_population_wh': 'White',
-          'males_population_bk': 'Black',
-          'males_population_lt': 'Latino',
-          'population': 'Poblacion<br/>',
-          'booked': 'Entrada<br/>Booked',
-          'left': 'Salida<br/>Left',
+          'males_population_as': 'Asian men',
+          'males_population_wh': 'White men',
+          'males_population_bk': 'Black men',
+          'males_population_lt': 'Latino men',
+          'females_population_as': 'Asian women',
+          'females_population_wh': 'White women',
+          'females_population_bk': 'Black women',
+          'females_population_lt': 'Latino women',
+          'population': 'Poblacion',
+          'booked': 'Entrada',
+          'left': 'Salida',
         };
 
     new StatsTableView({
@@ -245,16 +245,17 @@
       collection: collection,
       fields: ['population'],
       labels: labels,
-      base_height: 180,
+      base_height: 150,
     });
 
     new DailyChartView({
       el: $("#poblacion-diaria .demographic-chart"),
       legend: $("#poblacion-diaria .demographic-legend"),
       collection: collection,
-      fields: ['males_population_wh', 'males_population_lt', 'males_population_bk', ],
+      fields: ['females_population_as', 'females_population_lt', 'females_population_wh', 'females_population_bk', 'males_population_as', 'males_population_wh', 'males_population_lt', 'males_population_bk'],
       labels: labels,
-      base_height: 180,
+      exponent: 0.4,
+      base_height: 300,
     });
 
     new StatsTableView({
@@ -277,7 +278,7 @@
       legend: $("#entrada-y-salida .entrada-legend"),
       fields: ['booked'],
       labels: labels,
-      base_height: 180,
+      base_height: 190,
     });
 
     new DailyChartView({
@@ -286,7 +287,7 @@
       legend: $("#entrada-y-salida .salida-legend"),
       fields: ['left'],
       labels: labels,
-      base_height: 180,
+      base_height: 190,
     });
 
 

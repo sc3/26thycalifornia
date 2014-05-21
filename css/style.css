@@ -13,7 +13,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-top: 0;
 }
 
-h2 { font-size: 17px; }
+h2 { font-size: 19px; }
 h3 { font-size: 14px; }
 
 hr {
@@ -59,7 +59,7 @@ section {
 
 .box {
     position: relative;
-    padding: 20px 20px;
+    padding: 30px 40px;
     background:#fff;
     -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 35px rgba(0, 0, 0, 0.08) inset;
        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 35px rgba(0, 0, 0, 0.08) inset;
@@ -108,8 +108,9 @@ h1.headline {
 
 .back {
   float: right;
-  margin-top: -30px;
-  font-size: 14px;
+  margin-top: -35px;
+  font-size: 13px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .table {
@@ -125,36 +126,53 @@ h1.headline {
   font-size: 12px;
   line-height: 15px;
   vertical-align: middle;
+  padding: 8px 4px 8px 0;
 }
 .table>tbody>tr>td {
   line-height: 15px;
-  font-weight: bold;
+  padding: 8px 4px 8px 0;
+  vertical-align: middle;
+}
+td.value {
   text-align: right;
 }
+
 td small {
   font-weight: normal;
   font-size: 10px;
   color: #999;
 }
-.legend-marker {
-  display: block;
-  float: left;
-  height: 12px;
-  width: 12px;
-  margin-right: 4px;
-  background-color: #900;
-}
-.left .legend-marker {
-  background-color: #999;
-}
 .lines path {
   fill: none;
-  stroke: #900;
-  stroke-width: 1.5px;
+  stroke: #1f78b4;
+  stroke-width: 2px;
+  opacity: 0.7;
 }
-.lines path.left {
-  stroke: #999;
+.lines path.females_population_wh {
+  stroke: #a6cee3;
 }
+.lines path.females_population_lt {
+  stroke: #1f78b4;
+}
+.lines path.females_population_bk {
+  stroke: #b2df8a;
+}
+.lines path.females_population_as {
+  stroke: #33a02c;
+}
+.lines path.males_population_wh {
+  stroke: #e31a1c;
+}
+.lines path.males_population_lt {
+  stroke: #fb9a99;
+}
+.lines path.males_population_bk {
+  stroke: #fdbf6f;
+}
+.lines path.males_population_as {
+  stroke: #ff7f00;
+}
+
 .axis path.domain {
   stroke: none;
 }
@@ -192,19 +210,76 @@ td small {
 .chart-wrapper {
   margin-bottom: 50px;
 }
-.chart-wrapper, .detail {
+.detail {
+  margin: 40px 0 30px 0;
+}
+.chart-wrapper {
   margin-right: 180px;
 }
 .legend {
   float: right;
   width: 160px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .legend .table {
   margin-bottom: 0;
-  /*font-size: 11px;*/
 }
 .legend .table td, .legend .table th {
   border: none;
+}
+.legend-marker-col {
+  width: 12px;
+}
+.legend p.date {
+  padding-left: 4px;
+  font-size: 13px;
+}
+.legend-marker {
+  display: inline-block;
+  width: 15px;
+  height: 100%;
+  opacity: 0.7;
+}
+.population .legend-marker,
+.left .legend-marker,
+.booked .legend-marker
+{
+  background-color: #1f78b4;
+}
+.males_population_wh .legend-marker {
+  background-color: #e31a1c;
+}
+.males_population_lt .legend-marker {
+  background-color: #fb9a99;
+}
+.males_population_as .legend-marker {
+  background-color: #ff7f00;
+}
+.males_population_bk .legend-marker {
+  background-color: #fbdf6f;
+}
+.females_population_wh .legend-marker {
+  background-color: #a6cee3;
+}
+.females_population_lt .legend-marker {
+  background-color: #1f78b4;
+}
+.females_population_as .legend-marker {
+  background-color: #33a02c;
+}
+.females_population_bk .legend-marker {
+  background-color: #b2df8a;
+}
+.legend .table {
+  font-size: 13px;
+}
+td.legend-field {
+  width: 65%;
+  text-align: left;
+  font-weight: normal;
+}
+td.legend-value {
+  text-align: right;
 }
 
 @media (max-width: 768px) {
