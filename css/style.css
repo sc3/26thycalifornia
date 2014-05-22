@@ -1,13 +1,13 @@
 /* 26th y california css */
 body {
   font-family: "Radley", Georgia, serif;
-  font-size: 18px;
-  background-color: #f0f0f0;
+  font-size: 15px;
+  background-color: #f3f3f3;
+  padding-top: 40px;
 }
 
 a { color: #900; }
 a:hover { color: #c00; }
-
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-top: 0;
@@ -24,10 +24,16 @@ hr {
 }
 
 section {
+  margin-top: -40px;
+  padding-top: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
   margin-bottom: 65px;
-  padding: 0 20px;
 }
 
+.es {
+  font-style: italic;
+}
 
 .pagenav {
   padding: 4px 0;
@@ -36,7 +42,7 @@ section {
 .pagenav.affix {
   width: 100%;
   z-index: 100;
-  background-color: rgba(245, 245, 245, 0.95);
+  background-color: rgba(235, 235, 235, 0.95);
   border-bottom: 1px solid #aaa;
   box-shadow: 0px 0px 3px rgba(0,0,0,0.25);
   height: 40px;
@@ -53,14 +59,15 @@ section {
 .pagenav .nav>li>a {
   padding: 2px 15px;
 }
-.pagenav .nav>li>a:hover, .pagenav .nav>li>a:focus {
+.pagenav .nav>li.active>a, .pagenav .nav>li>a:hover, .pagenav .nav>li>a:focus {
   background-color: #fff;
+  color: #900;
 }
 
 .box {
-    position: relative;
-    padding: 30px 40px;
-    background:#fff;
+  position: relative;
+  padding: 30px 40px;
+  background:#fff;
     -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 35px rgba(0, 0, 0, 0.08) inset;
        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 35px rgba(0, 0, 0, 0.08) inset;
             box-shadow:0 1px 4px rgba(0, 0, 0, 0.2), 0 0 35px rgba(0, 0, 0, 0.08) inset;
@@ -83,19 +90,22 @@ section {
 
 .intro {
   text-align: center;
-  border-bottom: 1px solid #bbb;
-  padding-bottom: 10px;
-  margin: 0 120px 20px 120px;
-  font-size: 20px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.intro, .footer {
+  font-size: 22px;
+  line-height: 30px;
 }
 .intro .social-links {
-  margin-top: 10px;
-  font-size: 29px;
+  margin-top: 20px;
+  font-size: 38px;
 }
 .intro .social-links a {
   display: inline-block;
 }
-
+.footer a { font-style: italic; }
 
 h1.headline { 
   text-align: center;
@@ -211,7 +221,7 @@ td small {
   margin-bottom: 50px;
 }
 .detail {
-  margin: 40px 0 30px 0;
+  margin: 30px 0 0 0;
 }
 .chart-wrapper {
   margin-right: 180px;

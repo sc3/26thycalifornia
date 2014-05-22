@@ -28,14 +28,26 @@
 
 </head>
 
-<body>
+<body data-spy="scroll" data-target="#pagenav" data-offset="105">
+  <!-- Navegación -->
+  <div  id="pagenav" class="pagenav affix" role="navigation">
+    <div class="container text-center">
+      <ul class="pagenav-nav nav nav-pills">
+        <li><a href="#inicio">Inicio / Home</a></li>
+        <li><a href="#poblacion-diaria">Población diaria / Daily Population</a></li>
+        <li><a href="#entrada-y-salida">Entrada y salida / In and out</a></li>
+        <li><a href="#sobre">Sobre / About</a></li>
+      </ul>
+    </div>
+  </div>
+
   <!-- Introducción -->
   <div id="top"></div>
   <div class="container">
-    <div class="intro">
+    <section id="inicio" class="intro">
       <h1 class="headline">26th y California</h1>
-      <p>Visualiza los datos de raspado de preso localizador del Sheriff del Condado de Cook</p>
-      <p>Visualizing data scraped from the Cook County Sheriff's Inmate Locator</p>
+      <p class="es">Visualiza los datos de raspado de preso localizador del Sheriff del Condado de Cook</p>
+      <p class="en">Visualizing data scraped from the Cook County Sheriff's Inmate Locator</p>
       <p>Desarrollado por / developed by <a href="https://github.com/sc3/sc3">Supreme Chi-Town Coding Crew</a></p>
       <div class="social-links text-center">
         <a target="_blank" href="https://www.facebook.com/sharer.php?u=http%3A%2F%2F26thycalifornia.recoveredfactory.net&t=26th+y+California">
@@ -51,35 +63,23 @@
           <i class="fa fa-pinterest-square"></i>
         </a>
       </div>
-    </div>
+    </section>
   </div>
-
-  <!-- Navegación -->
-  <div data-spy="affix" data-offset-top="241" data-auto-width="true" class="pagenav" role="navigation">
-    <div class="container text-center">
-      <ul class="pagenav-nav nav nav-pills">
-        <li><a href="#poblacion-diaria">Población diaria / Daily Population</a></li>
-        <li><a href="#entrada-y-salida">Entrada y salida / In and out</a></li>
-        <li><a href="#demografia">Demografía / Demographics</a></li>
-        <li><a href="#citacion">Citaciones / Citations</a></li>
-      </ul>
-    </div>
-  </div>
-
 
   <!-- Contenido -->
   <div class="container-fluid">
     <section id="poblacion-diaria">
       <div class="box">
         <h1>Población diaria / Daily population</h1>
-        <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
+        <a href="#top" class="back">To top / Arriba <i class="fa fa-arrow-up"></i></a>
         <div class="detail">
           <div class="row">
-            <div class="col-sm-10">
+            <div class="col-sm-5 es">
               <p>Estas estadísticas representan el total de población de todo el sistema. Esto incluye prisioneros que no están alojados físicamente en la cárcel.</p>
+            </div>
+            <div class="col-sm-5 en">
               <p>These statistics represent the total population of the entire system. This includes prisoners who are not physically housed in the jail.</p>
               <p>Notice the rough weekly cycle in the jail's population (peaking over the weekend).</p>
-              <p>We are not sure what accounts for the sudden drop in population at the end of January. We believe it could have an artificial component, like scraper problems or data cleanup by the Sheriff's department. The weather almost certainly played a role as well -- crime incident reports were at a historical low in January and February 2014.
             </div>
             <div class="col-sm-2">
               <h2>Estadísticas / Statistics</h2>
@@ -107,7 +107,7 @@
     <section id="entrada-y-salida">
       <div class="box">
         <h1>Entrada y salida / In and out</h1>
-        <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
+        <a href="#top" class="back">To top / Arriba <i class="fa fa-arrow-up"></i></a>
         <div class="detail">
           <div class="row">
           </div>
@@ -134,28 +134,17 @@
         </div>
       </div>
     </section>
-    <section id="demografia">
-      <h1>Demografía / Demographics</h1>
-      <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
-      <div class="box">
-        <p><em>En construcción.</em></p>
-        <p><em>Under construction.</em></p>
+    <section id="sobre">
+      <h1>Sobre / About</h1>
+      <a href="#top" class="back">To top / Arriba <i class="fa fa-arrow-up"></i></a>
+      <div class="box footer">
+        <p>Originally created for Migrahack DF (Mexico City, April 2014).</p>
+        <p>Tutorial: <a href="https://migrahack.readthedocs.org">https://migrahack.readthedocs.org</a> (Out of date)</p>
+        <p>Github: <a href="https://github.com/sc3/26thycalifornia">https://github.com/sc3/26thycalifornia</a></p>
+        <p>API: <a href="https://github.com/sc3/cookcountyjail">https://github.com/sc3/cookcountyjail</a></p>
+        <p>"Guard Tower" fotografia del autor Eric Allix Rogers con Creative Commons <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/">Attribution-NonCommercial-ShareAlike 2.0</a></p>
       </div>
     </section>
-    <section id="citacion">
-      <h1>Citaciones / Citations</h1>
-      <a href="#top" class="back">Back to top <i class="fa fa-arrow-up"></i></a>
-      <div class="box">
-        <p><em>En construcción.</em></p>
-        <p><em>Under construction.</em></p>
-      </div>
-    </section>
-  </div>
-
-  <!-- Pie de pagina -->
-  <div class="container">
-    <hr/>
-    <p class="text-center"><small>"Guard Tower" fotografia del autor Eric Allix Rogers con Creative Commons <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/">Attribution-NonCommercial-ShareAlike 2.0</a></small></p>
   </div>
 
   <!-- Templates -->
