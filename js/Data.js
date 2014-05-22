@@ -1,8 +1,8 @@
 var DailyPopulationCollection = Backbone.Collection.extend({
-  url: 'data/daily_population.json',
+  url: 'http://cookcountyjail.recoveredfactory.net/api/2.0/daily_population',
 
+  // Parse: Cast all non-date strings to numbers
   parse: function(data) {
-    // Cast all strings to numbers
     return _.map(data, function(day) {
       for (key in day)
           if (key != "date")
@@ -11,24 +11,37 @@ var DailyPopulationCollection = Backbone.Collection.extend({
     });
   },
 
+
+  // Calculate average for 'field`
   get_average: function(field) {
-    // Calculate average for 'field`
     var values = this.pluck(field)
     var sum = _.reduce(values, function(memo, num) { return memo + num; }, 0);
     return Math.round(sum / values.length);
   },
 
+  // Calculate max for 'field'
   get_max: function(field) {
-    // Calculate max for 'field'
     return this.max(function(day) {
       return day.get(field);
     });
   },
 
+  // Calculate min for 'field'
   get_min: function(field) {
-    // Calculate min for 'field'
     return this.min(function(day) {
       return day.get(field);
     });
-  }
+  },
+
+  // Override sync to use jsonp by default
+  sync: function(method, model, options) {
+    var params = $.extend(true, {
+      type: 'GET',
+      dataType: 'jsonp',
+      url: this.url,
+      cache: true,
+    }, options);
+    return $.ajax(params);
+  },
+
 });
