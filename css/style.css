@@ -2,7 +2,7 @@
 body {
   font-family: "Radley", Georgia, serif;
   font-size: 18px;
-  background-color: #fafafa;
+  background-color: #f0f0f0;
 }
 
 a { color: #900; }
@@ -36,7 +36,7 @@ section {
 .pagenav.affix {
   width: 100%;
   z-index: 100;
-  background-color: #fff;
+  background-color: rgba(245, 245, 245, 0.95);
   border-bottom: 1px solid #aaa;
   box-shadow: 0px 0px 3px rgba(0,0,0,0.25);
   height: 40px;
