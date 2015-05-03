@@ -74,10 +74,25 @@ var DailyChartView = ChartView.extend({
       .nice();
   },
 
+  chooseMonthsToList: function() {
+    var iRatioMonthsListed;
+    var screen_width = screen.width;
+    if (screen_width < 768) {
+      iRatioMonthsListed = 4;
+    } else if (screen_width < 992) {
+      iRatioMonthsListed = 3;
+    } else if (screen_width < 1300) {
+      iRatioMonthsListed = 2;
+    } else {
+      iRatioMonthsListed = 1;
+    }
+    return iRatioMonthsListed;
+  },
+
   createAxes: function() {
     this.xAxisMonth = d3.svg.axis()
       .scale(this.xScale)
-      .ticks(d3.time.month, 1)
+      .ticks(d3.time.month, this.chooseMonthsToList())
       .tickSize(7)
       .tickFormat(function(d) {
         var fmt = d3.time.format("%b '%y");
